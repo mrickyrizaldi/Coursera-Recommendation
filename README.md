@@ -161,7 +161,7 @@ $$
 ## Modeling
 Pada tahap ini, saya membangun dua pendekatan sistem rekomendasi untuk mempersonalisasi pengalaman belajar pengguna di platform Coursera, yaitu dengan cara Content-Based Filtering (CBF) dan Collaborative Filtering (CF) menggunakan Neural Collaborative Filtering (Recommender Net). Kedua pendekatan ini dirancang untuk saling melengkapi, agar sistem mampu menangani kebutuhan pengguna baru (cold-start) maupun pengguna aktif dengan riwayat interaksi yang banyak.
 
-### Content Based Filtering 
+### 1. Content Based Filtering 
 Sistem rekomendasi berbasis konten bertujuan untuk merekomendasikan course kepada pengguna berdasarkan kemiripan antar course dari segi deskripsi/topik. Pendekatan ini sangat berguna terutama untuk menangani permasalahan cold start, yakni ketika pengguna belum memberikan cukup rating (misalnya kurang dari 3 course), di mana pendekatan Collaborative Filtering tidak memiliki cukup data untuk memprediksi preferensi. Adapun tahapannya meliputi:
 1. **Menggunakan TF-IDF (Term Frequency-Inverse Document Frequency)** untuk mentransformasi teks dari content menjadi representasi numerik dari teks deskripsi dalam bentuk vektor numerik dengan menekankan kata-kata yang penting dalam suatu dokumen namun jarang muncul di dokumen lain. Dalam konteks sistem rekomendasi berbasis konten, TF-IDF digunakan untuk mengekstrak kata-kata kunci dari deskripsi course sehingga sistem dapat menghitung kemiripan antar course dan merekomendasikan course yang memiliki konten serupa secara relevan. Pada kasus ini saya menggunakan parameter default.
 2. **Menggunakan cosine similarity** untuk menghitung kesamaan antar course dari Matrix TF-IDF yang dihasilkan sebelumnya. Nilai similarity ini berkisar antara 0 hingga 1 yang menunjukkan tingkat kemiripan antar course. Secara matematis, cosine similarity antara dua vektor \( A \) dan \( B \) didefinisikan sebagai:
@@ -202,7 +202,7 @@ Sistem rekomendasi berbasis konten bertujuan untuk merekomendasikan course kepad
   - Rekomendasi cenderung terbatas pada kursus yang mirip kontennya, sehingga kurang eksploratif.
   - Terbatas pada informasi fitur yang tersedia
 
-### Collaborative Filtering
+### 2. Collaborative Filtering
 Untuk melengkapi sistem rekomendasi yang andal, saya juga mengimplementasikan pendekatan Collaborative Filtering (CF) menggunakan arsitektur Neural Collaborative Filtering (NCF) yaitu RecommenderNet. Pendekatan ini memanfaatkan interaksi historis antara pengguna dan course untuk mempelajari preferensi pengguna dalam bentuk latent factors (representasi tersembunyi).
 
 **Arsitektur Model**  
@@ -249,6 +249,7 @@ Setelah model dilatih, sistem melakukan rekomendasi dibuat dengan langkah beriku
 
 ### Kesimpulan Model
 Pada tahap pemodelan, dua pendekatan sistem rekomendasi berhasil dibangun untuk meningkatkan personalisasi pengalaman belajar pengguna di platform Coursera, yaitu Content-Based Filtering (CBF) dan Collaborative Filtering (CF) dengan Neural Collaborative Filtering (NCF). Top-N Recommendation yang dihasilkan keduanya juga cukup relevan. Masing-masing pendekatan memiliki kekuatan yang saling melengkapi, di mana CBF efektif dalam menangani permasalahan cold-start karena hanya mengandalkan informasi konten dengan memanfaatkan kemiripan konten berbasis teks untuk merekomendasikan kursus serupa, sementara CF memberikan rekomendasi yang lebih personal dengan memanfaatkan pola interaksi historis pengguna didukung NCF yang mampu mempelajari preferensi tersembunyi pengguna dari data interaksi.
+
 
 ## Evaluation
 Pada proyek sistem rekomendasi kursus ini, digunakan dua pendekatan utama yaitu Content-Based Filtering (CBF) dan Collaborative Filtering (CF) berbasis Neural Collaborative Filtering (NCF). Setiap pendekatan dievaluasi menggunakan metrik yang sesuai dengan jenis data dan tujuan dari model. 
@@ -309,7 +310,7 @@ Untuk pendekatan CF, digunakan model neural network (RecommenderNet) yang dilati
 
   $` RMSE = \sqrt{\frac{1}{n} \sum_{i=1}^{n} (y_i - \hat{y}_i)^2} `$
 
-  - $`(y_i\)`$ adalah rating sebenarnya, dan $`(\hat{y}_i)`$ adalah rating prediksi.
+  - $`(y_i)`$ adalah rating aktual, dan $`(\hat{y}_i)`$ adalah rating prediksi.
 
 Semakin kecil nilai RMSE, semakin baik performa model dalam memprediksi preferensi pengguna terhadap kursus. 
 
