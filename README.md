@@ -251,10 +251,71 @@ Setelah model dilatih, sistem melakukan rekomendasi dibuat dengan langkah beriku
 Pada tahap pemodelan, dua pendekatan sistem rekomendasi berhasil dibangun untuk meningkatkan personalisasi pengalaman belajar pengguna di platform Coursera, yaitu Content-Based Filtering (CBF) dan Collaborative Filtering (CF) dengan Neural Collaborative Filtering (NCF). Top-N Recommendation yang dihasilkan keduanya juga cukup relevan. Masing-masing pendekatan memiliki kekuatan yang saling melengkapi, di mana CBF efektif dalam menangani permasalahan cold-start karena hanya mengandalkan informasi konten dengan memanfaatkan kemiripan konten berbasis teks untuk merekomendasikan kursus serupa, sementara CF memberikan rekomendasi yang lebih personal dengan memanfaatkan pola interaksi historis pengguna didukung NCF yang mampu mempelajari preferensi tersembunyi pengguna dari data interaksi.
 
 ## Evaluation
-Pada bagian ini Anda perlu menyebutkan metrik evaluasi yang digunakan. Kemudian, jelaskan hasil proyek berdasarkan metrik evaluasi tersebut.
+Pada proyek sistem rekomendasi kursus ini, digunakan dua pendekatan utama yaitu Content-Based Filtering (CBF) dan Collaborative Filtering (CF) berbasis Neural Collaborative Filtering (NCF). Setiap pendekatan dievaluasi menggunakan metrik yang sesuai dengan jenis data dan tujuan dari model. 
 
-Ingatlah, metrik evaluasi yang digunakan harus sesuai dengan konteks data, problem statement, dan solusi yang diinginkan.
+### 1. Content-Based Filtering (CBF)
+Untuk pendekatan CBF, sistem merekomendasikan kursus berdasarkan kemiripan konten dengan kursus target. Dalam kasus ini evaluasi relevansi dilakukan secara heuristik berdasarkan tumpang tindih kata dalam konten kursus, dan tidak merepresentasikan validasi terhadap interaksi pengguna sesungguhnya. Tahapan evaluasi untuk CBF meliputi:  
+**1. Pemilihan Kursus Terdekat Berdasarkan Kemiripan Konten**  
+   Pertama-tama, sistem mencari kursus yang paling mirip dengan kursus target berdasarkan nilai kemiripan kosinus (cosine similarity). Nilai-nilai kemiripan ini disimpan 
+   dalam sebuah dataframe similarity_data, yang berisi skor kemiripan antara kursus target dan seluruh kursus lainnya. Sistem kemudian mengambil top-k kursus yang memiliki 
+   skor kemiripan tertinggi, dan mengabaikan kursus asal agar tidak direkomendasikan kembali.  
+**2. Penilaian Relevansi Berdasarkan Kesamaan Konten**  
+   Untuk mengevaluasi seberapa "mirip" kursus yang direkomendasikan, sistem membandingkan konten (tags) dari kursus target dengan setiap kursus yang direkomendasikan. 
+   Konten diubah menjadi kumpulan kata (set), lalu dicek apakah ada irisan antara konten target dan konten rekomendasi. Jika ada kesamaan, maka kursus dianggap relevan.  
+**3. Menyusun Label untuk Evaluasi**  
+   Untuk menghitung metrik evaluasi, sistem membuat dua daftar:
+   - y_true berisi label ground truth, yaitu [1, 1, ..., 1] sebanyak jumlah kursus yang direkomendasikan. Asumsinya, semua kursus yang direkomendasikan seharusnya relevan.
+   - y_pred berisi hasil evaluasi dari langkah sebelumnya: 1 jika kontennya dianggap mirip (relevan), dan 0 jika tidak.  
+  
+**4. Menghitung Precision, Recall, dan F1-score**  
+Dengan y_true dan y_pred, tiga metrik utama dapat dihitung yaitu:  
+   1. **Precision**
+      Precision digunakan untuk mengukur seberapa banyak rekomendasi yang dihasilkan benar-benar relevan dengan kursus target. Dalam konteks ini, relevansi ditentukan 
+      berdasarkan kemiripan tag atau konten antara kursus target dan hasil rekomendasi. Formula untuk precision adalah:
 
-**Rubrik/Kriteria Tambahan (Opsional)**: 
-- Menjelaskan formula metrik dan bagaimana metrik tersebut bekerja.
+       $$\text{Precision} = \frac{TP}{TP + FP}$$
 
+      Di mana True Positives (Relevan): Kursus yang direkomendasikan dan memiliki tag/konten serupa dengan kursus target dan False Positives (Tidak Relevan): Kursus yang 
+      direkomendasikan tetapi tidak memiliki kemiripan konten.
+
+   2. **Recall**
+      Recall mengukur seberapa banyak kursus relevan yang berhasil direkomendasikan dari seluruh kursus yang seharusnya bisa direkomendasikan. Formula untuk recall adalah:
+
+      $$\text{Recall} = \frac{TP}{TP + FN}$$
+
+      Dalam konteks ini, Recall dihitung dengan asumsi bahwa seluruh hasil rekomendasi seharusnya relevan (karena ground truth terbatas), sehingga nilainya bisa sedikit 
+      bias namun tetap informatif.
+
+   3. **F1-Score**
+      F1-score merupakan harmonic mean dari Precision dan Recall, memberikan keseimbangan antara keduanya. Formula F1-score adalah:
+
+      $$\text{F1 Score} = 2 \times \frac{\text{Precision} \times \text{Recall}}{\text{Precision} + \text{Recall}}$$
+
+      Nilai F1-score yang tinggi menandakan bahwa sistem tidak hanya memberikan banyak hasil relevan (precision tinggi), tetapi juga menangkap sebagian besar dari hasil 
+      yang seharusnya direkomendasikan (recall tinggi).
+
+Hasil evaluasi menunjukkan nilai Precision, Recall, dan F1-Score sebesar 1.0, menandakan bahwa semua kursus yang direkomendasikan oleh sistem memiliki kemiripan konten/tag yang tinggi terhadap kursus target. Hal ini menunjukkan bahwa pendekatan CBF cukup efektif untuk menangkap kesamaan konten dalam konteks dataset ini.
+                  
+  ![image](https://github.com/user-attachments/assets/cf6c8fab-6408-42a6-b268-d474f657f55b)
+  ![image](https://github.com/user-attachments/assets/a3d7e05d-085e-4ed8-b4a4-32df9681dbe6)
+
+### 2. Collaborative Filtering
+Untuk pendekatan CF, digunakan model neural network (RecommenderNet) yang dilatih menggunakan embedding dari user_id dan course_id, serta dikompilasi menggunakan fungsi loss Binary Crossentropy dan **metrik evaluasi utama Root Mean Squared Error (RMSE)**.  
+  
+**RMSE (Root Mean Squared Error)**  
+**RMSE** digunakan untuk mengukur seberapa akurat prediksi interaksi (dalam hal ini rating atau preferensi) antara pengguna dan kursus yang dihasilkan oleh sistem rekomendasi dibandingkan dengan rating yang sebenarnya diberikan oleh pengguna. RMSE menunjukkan akar rata-rata kuadrat dari kesalahan antara rating prediksi dan rating aktual.
+
+- **Rumus RMSE**:  
+
+  $` RMSE = \sqrt{\frac{1}{n} \sum_{i=1}^{n} (y_i - \hat{y}_i)^2} `$
+
+  - $`(y_i\)`$ adalah rating sebenarnya, dan $`(\hat{y}_i)`$ adalah rating prediksi.
+
+Semakin kecil nilai RMSE, semakin baik performa model dalam memprediksi preferensi pengguna terhadap kursus. 
+
+Nilai RMSE yang lebih kecil menunjukkan prediksi yang lebih akurat. Dalam proyek ini, model mencapai nilai RMSE sebesar ±0.18, yang menandakan bahwa model mampu memprediksi preferensi pengguna terhadap kursus dengan tingkat kesalahan yang rendah, di mana ini sudah cukup bagus untuk sekelas sistem rekomendasi CBF.
+
+  ![image](https://github.com/user-attachments/assets/957b003a-9886-43f5-a9f6-7a36edc63470)
+
+### Kesimpulan Evaluasi  
+Berdasarkan hasil evaluasi, sistem rekomendasi kursus ini menunjukkan performa yang baik pada kedua pendekatan yang digunakan. Pada pendekatan Content-Based Filtering (CBF), sistem berhasil merekomendasikan kursus yang sangat relevan berdasarkan kesamaan konten, ditunjukkan oleh nilai precision, recall, dan F1-score yang mencapai 1.0. Hal ini mengindikasikan bahwa sistem mampu menangkap kemiripan informasi secara efektif antara kursus target dan rekomendasinya. Sementara itu, pendekatan Collaborative Filtering (CF) berbasis Neural Collaborative Filtering (NCF) menunjukkan kinerja prediksi yang cukup akurat dengan nilai Root Mean Squared Error (RMSE) sebesar sekitar 0.18. Nilai ini menunjukkan bahwa model dapat mempelajari preferensi pengguna dengan tingkat kesalahan yang relatif rendah. Secara keseluruhan, metrik yang digunakan telah sesuai dengan karakteristik data dan tujuan dari masing-masing pendekatan, serta memberikan gambaran menyeluruh mengenai efektivitas sistem dalam memberikan rekomendasi yang relevan dan personal.
