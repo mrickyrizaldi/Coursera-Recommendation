@@ -78,12 +78,42 @@ Dataset yang digunakan pada proyek sistem rekomendasi kursus Coursera ini terdir
 
 ### Tahapan Pemahaman Data
 #### Course Dataset
-1. Tahapan pertama adalah melakukan Exploratory Data Analisis menggunakan .info() untuk menampilkan ringkasan informasi struktur dataset berupa tipe data dan jumlah dataset, kemudian melakukan metode statistik deskriptif dari kolom numerik dengan fungsi .describe() untuk mengetahui sebaran data dan gambaran distribusi data.
-2. Selanjutnya melakukan pengecekan kondisi data dengan menampilkan data duplikat dan missing value yang ada pada dataset.
-3. Terakhir melakukan pengenalan data dengan melakukan pengecekan unique course untuk melihat bagaimana isi data dari name course serta distribusi course per institusi pembuat untuk mempertimbangkan relevansi antar course.
+1. Tahapan pertama adalah melakukan Exploratory Data Analisis menggunakan .info() untuk menampilkan ringkasan informasi struktur dataset berupa tipe data dan jumlah dataset, kemudian melakukan metode statistik deskriptif dengan fungsi .describe() untuk mengetahui sebaran data dan gambaran distribusi data. Pada tahap ini terlihat bahwa data memiliki 623 baris data dan masing masing diwakili oleh course_id yang berbeda-beda.
+ 
+  ![image](https://github.com/user-attachments/assets/27bdc44c-71fc-4396-b0c4-59f2eed65b58)
+  ![image](https://github.com/user-attachments/assets/07249d38-07c3-4625-af64-229096628cf6)
+
+2. Selanjutnya melakukan pengecekan kondisi data dengan menampilkan data duplikat dan missing value yang ada pada dataset. Walaupun di deskriptif terlihat ada judul yang duplikat tapi institusi dan course_idnya berbeda sehingga data tidak mengandung data duplikat serta tidak terdapat data dengan missing value.
+
+    ![image](https://github.com/user-attachments/assets/407cd0c4-33b3-4c7d-8b8d-c4a979c7c028) ![image](https://github.com/user-attachments/assets/ccb0ae11-2638-4a05-9999-f3ab8b9def00)
+
+
+3. Terakhir melakukan pengenalan data dengan melakukan pengecekan unique course untuk melihat bagaimana isi data dari name course serta distribusi course per institusi pembuat untuk mempertimbangkan relevansi antar course. Pada data terlihat ada 623 data dengan judul yang mengandung symbol, angka dan font non ASCII, dilihat dari institusi terdapat beberapa institusi yang mengunggah beberapa kelasnya di coursera.
+ 
+     ![image](https://github.com/user-attachments/assets/9200185b-e0b0-4189-b25e-eacdb0a4767b)
+     ![image](https://github.com/user-attachments/assets/0e54e731-7458-4412-a8c8-8213062aec7d)
+
 
 #### Reviews Dataset
-1. 
+1. Tahapan pertama masih sama yaitu menampilkan ringkasan informasi struktur dataset kemudian melakukan metode statistik deskriptif untuk melihat sebaran dan gambaran distribusi data. Pada data terlihat mengandung 1454711 baris data yang mana cukup banyak, sekilas terlihat pada deskriptif rating dominan bintang 5 dan ada user yang terlihat memiliki review lebih banyak dari total kelas, selain itu terlihat course_id hanya mengandung 604 kelas yang menunjukkan ada beberapa kelas yang belum pernah di rating oleh user.
+
+    ![image](https://github.com/user-attachments/assets/981f1111-a98f-4377-938f-3917fffc224d)
+    ![image](https://github.com/user-attachments/assets/c11a77d3-69dc-4b64-a5c5-6bb98d8b9f0d)
+
+2. Selanjutnya untuk memastikan dilakukan pendalaman dengan melihat kelas yang tidak pernah dirating terlihat ada 19 baris data, distribusi rating juga terlihat dominan di bintang 4-5, selanjutnya dilakukan pendalaman pada fitur terlihat ada beberapa kelas yang dominan di rating seperti python, kemudian ada beberapa user yang memiliki rating dengan jumlah melebihi kelas menunjukkan adanya duplicate data.
+
+    ![image](https://github.com/user-attachments/assets/09cca218-0708-4b15-8f64-c4464a320bd7)  
+    ![image](https://github.com/user-attachments/assets/771c20ff-fc3b-452c-9470-66f4879c9a88)  
+    ![image](https://github.com/user-attachments/assets/bf86953f-a919-42ef-96eb-034381ad9a04)
+    ![image](https://github.com/user-attachments/assets/c8f722f6-d0a1-49ac-bcee-a075141b309b)
+
+4. Kemudian dilakukan pengecekan data duplikat dan benar saja terdapat 948595 baris data duplikat yang diberikan oleh user yang sama, terlihat bahwa ada beberapa user yang memberikan 2-3 kali ulasan dengan nilai rating yang sama. Selain itu dilakukan juga pengenalan bagaimana jumlah review per waktu di mana terlihat lonjakan user review di tahun 2020-2021. Selanjutnya dilakukan tahapan pengecekan missing value terlihat ada missing value pada fitur reviews yang berisi ulasan namun hal ini tidak masalah karena fitur ini tidak akan digunakan.
+
+    ![image](https://github.com/user-attachments/assets/139bc7a3-3dcf-462a-845c-676fe58b982a) ![image](https://github.com/user-attachments/assets/c5dbb195-80a6-4f1d-9e2f-07da383c1690) 
+    ![image](https://github.com/user-attachments/assets/a93b1700-1ca1-4fd3-b084-b1f6967d4405)  
+    ![image](https://github.com/user-attachments/assets/ea92bbec-282a-4b13-8c36-c80758ecbc2c)  
+     
+6. Terakhir dilakukan pengecekan sparsity untuk mengetahui seberapa banyak course yang tidak diisi rating oleh user. Terlihat jumlah elemen pada matriks yang dihasilkan sebesar 173.836.032 dengan sparsity sebesar 0,9971 yang menunjukkan bahwa banyak user yang hanya mereview sedikit course.
 
 ## Data Preparation
 Pada bagian ini Anda menerapkan dan menyebutkan teknik data preparation yang dilakukan. Teknik yang digunakan pada notebook dan laporan harus berurutan.
