@@ -49,22 +49,41 @@ Dalam proyek ini, pendekatan yang digunakan terdiri dari dua jenis yaitu menggun
 3. Mengembangkan sistem Collaborative Filtering dengan pendekatan Recommender Net berbasis embedding untuk mempelajari pola interaksi pengguna terhadap kursus.
 
 ### Solution statements
-- Solusi 1: Membangun sistem Content-Based Filtering yang merekomendasikan kursus berdasarkan kesamaan konten dengan kursus yang telah diminati pengguna. Representasi konten akan dihasilkan menggunakan teknik TF-IDF dari fitur seperti judul dan institusi kursus, kemudian dilakukan pengukuran kemiripan menggunakan cosine similarity untuk menghasilkan daftar kursus yang relevan. Sistem ini ditujukan untuk pengguna baru yang belum banyak berinteraksi dengan platform.
-- Solusi 2: Membangun sistem Collaborative Filtering menggunakan pendekatan Neural Collaborative Filtering (Recommender Net) dengan memanfaatkan embedding untuk merepresentasikan pengguna dan kursus. Sistem ini akan dilatih menggunakan data historis ulasan atau rating dari pengguna dan bertujuan untuk memberikan rekomendasi berdasarkan preferensi kolektif pengguna lain yang memiliki pola interaksi serupa.
-- Solusi 3: Mengintegrasikan kedua pendekatan tersebut untuk menciptakan sistem yang adaptif baik terhadap pengguna baru maupun pengguna lama. Sistem Content-Based Filtering akan menangani cold-start user, sementara sistem Collaborative Filtering akan menyajikan rekomendasi berbasis interaksi yang lebih personal. Pendekatan ini diharapkan meningkatkan cakupan dan relevansi rekomendasi yang dihasilkan.
+- **Solusi 1:** Membangun sistem Content-Based Filtering yang merekomendasikan kursus berdasarkan kesamaan konten dengan kursus yang telah diminati pengguna. Representasi konten akan dihasilkan menggunakan teknik TF-IDF dari fitur seperti judul dan institusi kursus, kemudian dilakukan pengukuran kemiripan menggunakan cosine similarity untuk menghasilkan daftar kursus yang relevan. Sistem ini ditujukan untuk pengguna baru yang belum banyak berinteraksi dengan platform.
+- **Solusi 2:** Membangun sistem Collaborative Filtering menggunakan pendekatan Neural Collaborative Filtering (Recommender Net) dengan memanfaatkan embedding untuk merepresentasikan pengguna dan kursus. Sistem ini akan dilatih menggunakan data historis ulasan atau rating dari pengguna dan bertujuan untuk memberikan rekomendasi berdasarkan preferensi kolektif pengguna lain yang memiliki pola interaksi serupa.
+- **Solusi 3:** Mengintegrasikan kedua pendekatan tersebut untuk menciptakan sistem yang adaptif baik terhadap pengguna baru maupun pengguna lama. Sistem Content-Based Filtering akan menangani cold-start user, sementara sistem Collaborative Filtering akan menyajikan rekomendasi berbasis interaksi yang lebih personal. Pendekatan ini diharapkan meningkatkan cakupan dan relevansi rekomendasi yang dihasilkan.
 
 ## Data Understanding
-Paragraf awal bagian ini menjelaskan informasi mengenai jumlah data, kondisi data, dan informasi mengenai data yang digunakan. Sertakan juga sumber atau tautan untuk mengunduh dataset. Contoh: [UCI Machine Learning Repository](https://archive.ics.uci.edu/ml/datasets/Restaurant+%26+consumer+data).
+Dataset yang digunakan pada proyek sistem rekomendasi kursus Coursera ini terdiri dari dua bagian utama, yaitu dataset kursus dan dataset ulasan pengguna. Dataset ini bertujuan untuk memberikan wawasan tentang konten kursus serta perilaku pengguna dalam memberikan ulasan dan penilaian terhadap kursus yang mereka ikuti di platform Coursera. Dataset ini diambil dari sumber terbuka dan dapat diakses melalui tautan berikut [Course Reviews on Coursera-Kaggle](https://www.kaggle.com/datasets/imuhammad/course-reviews-on-coursera). Berikut adalah deskripsi dari kedua dataset:  
+  
+**1. Coursera Courses Dataset**  
+   Dataset ini berisi informasi tentang 623 kursus yang tersedia di Coursera. Setiap baris data mewakili satu kursus yang ditawarkan oleh berbagai institusi dari seluruh dunia. Dataset ini 
+   berguna sebagai sumber data utama dalam membangun sistem Content-Based Filtering, terutama melalui fitur-fitur teks seperti judul kursus dan institusi penyedia.
+   Variabel-variabel dalam dataset ini adalah sebagai berikut:
+  - **name (karakter):** Nama dari kursus, digunakan untuk representasi konten dalam sistem rekomendasi berbasis teks.
+  - **institution (karakter):** Institusi penyelenggara kursus, seperti universitas atau organisasi profesional.
+  - **course_url (karakter):** Tautan langsung menuju halaman kursus di platform Coursera.
+  - **course_id (karakter):** ID unik yang merepresentasikan setiap kursus dan digunakan untuk menggabungkan dengan dataset ulasan.
 
-Selanjutnya, uraikanlah seluruh variabel atau fitur pada data. Sebagai contoh:  
+**2. Coursera Reviews Dataset**
+  Dataset ini mencakup sekitar 1,45 juta ulasan pengguna terhadap berbagai kursus Coursera. Setiap baris data merepresentasikan satu ulasan yang diberikan oleh seorang pengguna terhadap sebuah 
+  kursus, termasuk tanggal ulasan, teks ulasan, dan skor rating. Dataset ini sangat berguna untuk membangun sistem Collaborative Filtering berbasis Neural Collaborative Filtering karena memuat 
+  interaksi antara pengguna dan kursus.
+  Variabel-variabel dalam dataset ini adalah sebagai berikut:
+  - **reviews (karakter):** Isi teks dari ulasan yang diberikan oleh pengguna terhadap kursus.
+  - **reviewers (karakter)**: Nama atau ID dari pengguna yang memberikan ulasan.
+  - **date_reviews (datetime):** Tanggal publikasi ulasan.
+  - **rating (integer):** Skor penilaian yang diberikan untuk kursus, biasanya dalam skala 1–5.
+  - **course_id (karakter):** ID kursus yang diulas, digunakan untuk penggabungan dengan dataset Coursera Courses.
 
-Variabel-variabel pada Restaurant UCI dataset adalah sebagai berikut:
-- accepts : merupakan jenis pembayaran yang diterima pada restoran tertentu.
-- cuisine : merupakan jenis masakan yang disajikan pada restoran.
-- dst
+### Tahapan Pemahaman Data
+#### Course Dataset
+1. Tahapan pertama adalah melakukan Exploratory Data Analisis menggunakan .info() untuk menampilkan ringkasan informasi struktur dataset berupa tipe data dan jumlah dataset, kemudian melakukan metode statistik deskriptif dari kolom numerik dengan fungsi .describe() untuk mengetahui sebaran data dan gambaran distribusi data.
+2. Selanjutnya melakukan pengecekan kondisi data dengan menampilkan data duplikat dan missing value yang ada pada dataset.
+3. Terakhir melakukan pengenalan data dengan melakukan pengecekan unique course untuk melihat bagaimana isi data dari name course serta distribusi course per institusi pembuat untuk mempertimbangkan relevansi antar course.
 
-**Rubrik/Kriteria Tambahan (Opsional)**:
-- Melakukan beberapa tahapan yang diperlukan untuk memahami data, contohnya teknik visualisasi data beserta insight atau exploratory data analysis.
+#### Reviews Dataset
+1. 
 
 ## Data Preparation
 Pada bagian ini Anda menerapkan dan menyebutkan teknik data preparation yang dilakukan. Teknik yang digunakan pada notebook dan laporan harus berurutan.
