@@ -123,20 +123,19 @@ Tahap persiapan atau prapemrosesan data merupakan langkah krusial dalam analisis
 
     ![image](https://github.com/user-attachments/assets/09400a5e-0d4d-4e6e-a486-039d34ba3aa9)
 
-3. Setelah semua proses selesai dibuat fitur baru bernama content yang berisi kata kunci course dari course_id dan institusi pembuat course fitur ini yang nantinya akan digunakan untuk melihat kemiripan antar course berdasarkan preferensi kata kunci dan pembuat course.
+3. Setelah semua proses selesai dibuat fitur baru bernama content yang berisi kata kunci course dari course_id dan institusi pembuat course. Tujuannya Membuat representasi gabungan dari kata kunci dan institusi sebagai identitas konten kursus. Fitur ini akan digunakan untuk menghitung kemiripan antar kursus dalam sistem rekomendasi berbasis konten.
 
     ![image](https://github.com/user-attachments/assets/1c2644e6-b36a-4b17-bc5f-34fd60d9aae5)
 
 ### Preprocessing Reviews Dataset
-1. Pada tahapan EDA telah diketahui bahwa terdapat 948595 data duplikat sehingga data tersebut akan dihapus namun dengan tetap mempertahankan satu nilai rating berdasarkan rating paling terbaru untuk menjaga relevansi terhadap preferensi terkini pengguna.
+1. Pada tahapan EDA telah diketahui bahwa terdapat 948595 data duplikat sehingga data tersebut akan dihapus namun dengan tetap mempertahankan satu nilai rating berdasarkan rating paling terbaru untuk menjaga relevansi terhadap preferensi terkini pengguna. Tujuannya penghapusan duplikat adalah untuk menghindari bias akibat pengulangan data dan memastikan setiap interaksi user-course dihitung satu kali. Menjaga satu entri terbaru memastikan data tetap relevan secara temporal.
 
     ![image](https://github.com/user-attachments/assets/83a1343d-bcc9-4bda-8a29-06901b71779b)
 
-2. Selanjutnya dataset reviews yang sudah dibersihkan dari duplikat dilakukan penggabungan dengan course dataset berdasarkan kesamaan dalam course_id menggunakan cara inner sehingga data data yang tidak terdapat pada kedua dataset (belum pernah di review) tidak akan digunakan kedalam pelatihan.
-
+2. Selanjutnya dataset reviews yang sudah dibersihkan dari duplikat dilakukan penggabungan dengan course dataset berdasarkan kesamaan dalam course_id menggunakan cara inner join untuk memastikan data-data yang tidak terdapat pada kedua dataset (belum pernah di review) tidak akan digunakan kedalam pelatihan.
     ![image](https://github.com/user-attachments/assets/216e6f2b-afa6-4b20-a884-aa57dea9ef02)
 
-3. Kemudian didasarkan atas EDA yang menunjukkan bahwa sparsitynya cukup tinggi, sparsity tinggi bisa membuat model kesulitan belajar pola dan menurunkan akurasi prediksi. Oleh karena itu akan dilakukan sedikit penanganan terhadap hal ini dengan melakukan filter user yang memiliki rating diatas 3 course saja yang akan digunakan sebaliknya yang dibawah itu akan dihapus. Adapun pemilihan filter diatas 3 sebagai treshold untuk menjaga keseimbangan antara kualitas dan kuantitas data.
+3. Kemudian berdasarkan tahapan EDA yang menunjukkan bahwa sparsitynya tinggi. Hal ini bisa membuat model kesulitan belajar pola dan menurunkan akurasi prediksi karena user dengan terlalu sedikit interaksi biasanya tidak cukup informatif. Oleh karena itu akan dilakukan sedikit penanganan terhadap hal ini dengan melakukan filter user yang memiliki rating diatas 3 course saja yang akan digunakan, sebaliknya user yang dibawah itu akan dihapus. Adapun pemilihan filter diatas 3 sebagai treshold untuk menjaga keseimbangan antara kualitas dan kuantitas data.
 
     ![image](https://github.com/user-attachments/assets/55027c99-e4f2-4b17-8a53-166811e2ec6b)
 
@@ -153,7 +152,7 @@ $$
 
    ![image](https://github.com/user-attachments/assets/8d52e04c-66e7-4e11-80a0-08730eb37041)
 
-7. Terakhir dilakukan data splitting dengan mengacak keseluruhan isi dataset terlebih dahulu untuk mencegah bias (shuffling), selanjutnya dilakukan splitting dengan proporsi 80% data training dan 20% data validasi dengan X terdiri dari user_encoded dan course encoded, serta y yang berisi rating normalized.
+7. Terakhir dilakukan data splitting dengan mengacak keseluruhan isi dataset terlebih dahulu untuk mencegah bias (shuffling), selanjutnya dilakukan splitting yaitu memisahkan data pelatihan dan validasi untuk mengevaluasi performa model secara obyektif dengan proporsi 80% data training dan 20% data validasi di mana X terdiri dari user_encoded dan course encoded, serta y yang berisi rating normalized.
 
     ![image](https://github.com/user-attachments/assets/31a0d92f-7d6c-42ff-b0f1-426bd8971299)
 
