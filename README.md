@@ -33,6 +33,7 @@ Berbagai studi terdahulu telah menunjukkan potensi signifikan sistem rekomendasi
 - Fiarni, C., & Maharani, H. (2019). [Product Recommendation System Design Using Cosine Similarity and Content-based Filtering Methods](https://journal.ugm.ac.id/ijitee/article/view/45538).
 - Jena, K.K., Bhoi, S.K., Malik, T.K., Sahoo, K.S., Jhanjhi, N.Z., Bhatia, S., Amsaad, F., (2023). [E-Learning Course Recommender System Using Collaborative Filtering Models](https://www.mdpi.com/2079-9292/12/1/157).
 
+  
 ## Business Understanding
 Tujuan dari proyek ini adalah untuk mengembangkan sistem rekomendasi kursus Coursera yang dapat membantu pengguna menemukan kursus yang relevan dan sesuai dengan preferensi atau minat mereka. Platform MOOC seperti Coursera menawarkan ribuan kursus dari berbagai bidang, yang dapat menimbulkan overload informasi bagi pengguna, terutama bagi pemula atau pengguna yang tidak memiliki riwayat interaksi sebelumnya. Oleh karena itu, sistem rekomendasi yang cerdas dan personal sangat dibutuhkan agar proses pencarian kursus menjadi lebih efisien dan terarah.
 
@@ -53,6 +54,7 @@ Dalam proyek ini, pendekatan yang digunakan terdiri dari dua jenis yaitu menggun
 - **Solusi 2:** Membangun sistem Collaborative Filtering menggunakan pendekatan Neural Collaborative Filtering (Recommender Net) dengan memanfaatkan embedding untuk merepresentasikan pengguna dan kursus. Sistem ini akan dilatih menggunakan data historis ulasan atau rating dari pengguna dan bertujuan untuk memberikan rekomendasi berdasarkan preferensi kolektif pengguna lain yang memiliki pola interaksi serupa.
 - **Solusi 3:** Mengintegrasikan kedua pendekatan tersebut untuk menciptakan sistem yang adaptif baik terhadap pengguna baru maupun pengguna lama. Sistem Content-Based Filtering akan menangani cold-start user, sementara sistem Collaborative Filtering akan menyajikan rekomendasi berbasis interaksi yang lebih personal. Pendekatan ini diharapkan meningkatkan cakupan dan relevansi rekomendasi yang dihasilkan.
 
+  
 ## Data Understanding
 Dataset yang digunakan pada proyek sistem rekomendasi kursus Coursera ini terdiri dari dua bagian utama, yaitu dataset kursus dan dataset ulasan pengguna. Dataset ini bertujuan untuk memberikan wawasan tentang konten kursus serta perilaku pengguna dalam memberikan ulasan dan penilaian terhadap kursus yang mereka ikuti di platform Coursera. Dataset ini diambil dari sumber terbuka dan dapat diakses melalui tautan berikut [Course Reviews on Coursera-Kaggle](https://www.kaggle.com/datasets/imuhammad/course-reviews-on-coursera). Berikut adalah deskripsi dari kedua dataset:  
   
@@ -77,7 +79,7 @@ Dataset yang digunakan pada proyek sistem rekomendasi kursus Coursera ini terdir
   - **course_id (karakter):** ID kursus yang diulas, digunakan untuk penggabungan dengan dataset Coursera Courses.
 
 ### Tahapan Pemahaman Data
-#### Course Dataset
+**Course Dataset**
 1. Tahapan pertama adalah melakukan Exploratory Data Analisis menggunakan .info() untuk menampilkan ringkasan informasi struktur dataset berupa tipe data dan jumlah dataset, kemudian melakukan metode statistik deskriptif dengan fungsi .describe() untuk mengetahui sebaran data dan gambaran distribusi data. Pada tahap ini terlihat bahwa data memiliki 623 baris data dan masing masing diwakili oleh course_id yang berbeda-beda.
  
   ![image](https://github.com/user-attachments/assets/27bdc44c-71fc-4396-b0c4-59f2eed65b58)
@@ -93,8 +95,7 @@ Dataset yang digunakan pada proyek sistem rekomendasi kursus Coursera ini terdir
      ![image](https://github.com/user-attachments/assets/9200185b-e0b0-4189-b25e-eacdb0a4767b)
      ![image](https://github.com/user-attachments/assets/0e54e731-7458-4412-a8c8-8213062aec7d)
 
-
-#### Reviews Dataset
+**Reviews Dataset**
 1. Tahapan pertama masih sama yaitu menampilkan ringkasan informasi struktur dataset kemudian melakukan metode statistik deskriptif untuk melihat sebaran dan gambaran distribusi data. Pada data terlihat mengandung 1454711 baris data yang mana cukup banyak, sekilas terlihat pada deskriptif rating dominan bintang 5 dan ada user yang terlihat memiliki review lebih banyak dari total kelas, selain itu terlihat course_id hanya mengandung 604 kelas yang menunjukkan ada beberapa kelas yang belum pernah di rating oleh user.
 
     ![image](https://github.com/user-attachments/assets/981f1111-a98f-4377-938f-3917fffc224d)
@@ -110,17 +111,52 @@ Dataset yang digunakan pada proyek sistem rekomendasi kursus Coursera ini terdir
 4. Kemudian dilakukan pengecekan data duplikat dan benar saja terdapat 948595 baris data duplikat yang diberikan oleh user yang sama, terlihat bahwa ada beberapa user yang memberikan 2-3 kali ulasan dengan nilai rating yang sama. Selain itu dilakukan juga pengenalan bagaimana jumlah review per waktu di mana terlihat lonjakan user review di tahun 2020-2021. Selanjutnya dilakukan tahapan pengecekan missing value terlihat ada missing value pada fitur reviews yang berisi ulasan namun hal ini tidak masalah karena fitur ini tidak akan digunakan.
 
     ![image](https://github.com/user-attachments/assets/139bc7a3-3dcf-462a-845c-676fe58b982a) ![image](https://github.com/user-attachments/assets/c5dbb195-80a6-4f1d-9e2f-07da383c1690) 
-    ![image](https://github.com/user-attachments/assets/a93b1700-1ca1-4fd3-b084-b1f6967d4405)  
-    ![image](https://github.com/user-attachments/assets/ea92bbec-282a-4b13-8c36-c80758ecbc2c)  
+    ![image](https://github.com/user-attachments/assets/a93b1700-1ca1-4fd3-b084-b1f6967d4405) ![image](https://github.com/user-attachments/assets/ea92bbec-282a-4b13-8c36-c80758ecbc2c)  
      
 6. Terakhir dilakukan pengecekan sparsity untuk mengetahui seberapa banyak course yang tidak diisi rating oleh user. Terlihat jumlah elemen pada matriks yang dihasilkan sebesar 173.836.032 dengan sparsity sebesar 0,9971 yang menunjukkan bahwa banyak user yang hanya mereview sedikit course.
 
 ## Data Preparation
-Pada bagian ini Anda menerapkan dan menyebutkan teknik data preparation yang dilakukan. Teknik yang digunakan pada notebook dan laporan harus berurutan.
+Tahap persiapan atau prapemrosesan data merupakan langkah krusial dalam analisis data dan pengembangan model machine learning. Tanpa proses ini, data yang tidak bersih, tidak lengkap, atau tidak konsisten dapat menimbulkan kesalahan dalam analisis, menurunkan akurasi model, dan menghasilkan keputusan yang kurang tepat. Oleh karena itu, prapemrosesan menjadi tahap penting untuk memastikan data dalam kondisi siap dan optimal guna menghasilkan insight serta model yang berkualitas. Berdasarkan hasil Exploratory Data Analysis sebelumnya, terdapat beberapa langkah yang perlu dilakukan:
+### Preprocessing Course Dataset
+1. Pada dataset course dilakukan proses pembersihan fitur text yang ada pada data, meliputi pembersihan angka, tanda baca, newline, dan spasi ganda. Kemudian dilakukan tahapan casefolded untuk mengubah text menjadi huruf kecil untuk menyamakan konteks. fitur yang dilakukan data cleaning hanya fitur institusi dan course_id saja (course_id dipilih karena mengandung kata kunci berbeda untuk tiap course dibandingkan name course yang mengandung nama yang sama).
+2. Selanjutnya untuk fitur course_id yang sudah dibersihkan kemudian dilakukan pengecekan apakah textnya termasuk huruf ASCII (kemungkinan dalam alphabet inggris), jika iya maka akan dilakukan pemrosesan lanjutan meliputi tokenisasi untuk memecah kata yang akan di proses, filtering untuk menghapus stopword atau kata kurang bermakna pada text dalam bahasa inggris, terakhir dilakukan lematisasi untuk mengurangi kompleksitas fitur dengan mengubah text ke bentuk dasar kamus.
 
-**Rubrik/Kriteria Tambahan (Opsional)**: 
-- Menjelaskan proses data preparation yang dilakukan
-- Menjelaskan alasan mengapa diperlukan tahapan data preparation tersebut.
+    ![image](https://github.com/user-attachments/assets/09400a5e-0d4d-4e6e-a486-039d34ba3aa9)
+
+3. Setelah semua proses selesai dibuat fitur baru bernama content yang berisi kata kunci course dari course_id dan institusi pembuat course fitur ini yang nantinya akan digunakan untuk melihat kemiripan antar course berdasarkan preferensi kata kunci dan pembuat course.
+
+    ![image](https://github.com/user-attachments/assets/1c2644e6-b36a-4b17-bc5f-34fd60d9aae5)
+
+### Preprocessing Reviews Dataset
+1. Pada tahapan EDA telah diketahui bahwa terdapat 948595 data duplikat sehingga data tersebut akan dihapus namun dengan tetap mempertahankan satu nilai rating berdasarkan rating paling terbaru untuk menjaga relevansi terhadap preferensi terkini pengguna.
+
+    ![image](https://github.com/user-attachments/assets/83a1343d-bcc9-4bda-8a29-06901b71779b)
+
+2. Selanjutnya dataset reviews yang sudah dibersihkan dari duplikat dilakukan penggabungan dengan course dataset berdasarkan kesamaan dalam course_id menggunakan cara inner sehingga data data yang tidak terdapat pada kedua dataset (belum pernah di review) tidak akan digunakan kedalam pelatihan.
+
+    ![image](https://github.com/user-attachments/assets/216e6f2b-afa6-4b20-a884-aa57dea9ef02)
+
+3. Kemudian didasarkan atas EDA yang menunjukkan bahwa sparsitynya cukup tinggi, sparsity tinggi bisa membuat model kesulitan belajar pola dan menurunkan akurasi prediksi. Oleh karena itu akan dilakukan sedikit penanganan terhadap hal ini dengan melakukan filter user yang memiliki rating diatas 3 course saja yang akan digunakan sebaliknya yang dibawah itu akan dihapus. Adapun pemilihan filter diatas 3 sebagai treshold untuk menjaga keseimbangan antara kualitas dan kuantitas data.
+
+    ![image](https://github.com/user-attachments/assets/55027c99-e4f2-4b17-8a53-166811e2ec6b)
+
+4. Setelah dilakukan filtering data selajutnya akan dilakukan normalisasi atau scaling terhadap fitur rating yang berada di rentang 1-5, normalisasi dilakukan menggunakan MinMaxScaler untuk mengurangi kompleksitas fitur dan mempermudah model dalam melakukan pemrosesan dalam menentukan suka atau tidak sukanya user terhadap course. Adapun metode MinMax Scaling sendiri adalah teknik penskalaan yang mengubah nilai fitur ke dalam rentang 0 hingga 1, teknik ini dipilih karena sederhana, tidak mengubah distribusi asli data secara signifikan, dan cocok untuk menjaga proporsi nilai dalam fitur yang memiliki skala berbeda. Rumus MinMax Scaling adalah:
+
+$$
+X_{\text{scaled}} = \frac{X - X_{\text{min}}}{X_{\text{max}} - X_{\text{min}}}
+$$
+
+  - $` X `$ adalah nilai original.  
+  - $` X_{\text{min}} `$ dan $` X_{\text{max}} `$ adalah nilai minimum dan maksimum dari fitur.
+
+5. Berikutnya dilakukan encoding untuk fitur kategorikal yang akan digunakan dalam pelatihan model diantaranya fitur reviewers yang berisi nama user dan fitur course_id yang berisi kata kunci course atau ID dari course. Hasilnya, terdapat 37.034 nilai unik untuk user dan 603 nilai unik untuk course. Proses ini penting agar model dapat memahami data kategorikal yang secara default tidak dapat diolah oleh model numerik.
+
+   ![image](https://github.com/user-attachments/assets/8d52e04c-66e7-4e11-80a0-08730eb37041)
+
+7. Terakhir dilakukan data splitting dengan mengacak keseluruhan isi dataset terlebih dahulu untuk mencegah bias (shuffling), selanjutnya dilakukan splitting dengan proporsi 80% data training dan 20% data validasi dengan X terdiri dari user_encoded dan course encoded, serta y yang berisi rating normalized.
+
+    ![image](https://github.com/user-attachments/assets/31a0d92f-7d6c-42ff-b0f1-426bd8971299)
+
 
 ## Modeling
 Tahapan ini membahas mengenai model sisten rekomendasi yang Anda buat untuk menyelesaikan permasalahan. Sajikan top-N recommendation sebagai output.
