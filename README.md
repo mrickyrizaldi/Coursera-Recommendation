@@ -34,32 +34,24 @@ Berbagai studi terdahulu telah menunjukkan potensi signifikan sistem rekomendasi
 - Jena, K.K., Bhoi, S.K., Malik, T.K., Sahoo, K.S., Jhanjhi, N.Z., Bhatia, S., Amsaad, F., (2023). [E-Learning Course Recommender System Using Collaborative Filtering Models](https://www.mdpi.com/2079-9292/12/1/157).
 
 ## Business Understanding
+Tujuan dari proyek ini adalah untuk mengembangkan sistem rekomendasi kursus Coursera yang dapat membantu pengguna menemukan kursus yang relevan dan sesuai dengan preferensi atau minat mereka. Platform MOOC seperti Coursera menawarkan ribuan kursus dari berbagai bidang, yang dapat menimbulkan overload informasi bagi pengguna, terutama bagi pemula atau pengguna yang tidak memiliki riwayat interaksi sebelumnya. Oleh karena itu, sistem rekomendasi yang cerdas dan personal sangat dibutuhkan agar proses pencarian kursus menjadi lebih efisien dan terarah.
 
-Pada bagian ini, Anda perlu menjelaskan proses klarifikasi masalah.
-
-Bagian laporan ini mencakup:
+Dalam proyek ini, pendekatan yang digunakan terdiri dari dua jenis yaitu menggunakan Content-Based Filtering (CBF) dengan teknik representasi teks seperti TF-IDF dan cosine similarity untuk mengukur kemiripan antar kursus dan menggunakan Collaborative Filtering (CF) berdasarkan pendekatan Neural Collaborative Filtering (Recommender Net) untuk mempelajari pola interaksi pengguna terhadap kursus. Pendekatan CBF diharapkan dapat memberikan solusi terhadap permasalahan cold-start user, sedangkan pendekatan CF dapat memanfaatkan data historis interaksi pengguna untuk meningkatkan personalisasi. Dengan adanya sistem ini, pengguna tidak hanya diberikan daftar kursus populer, tetapi rekomendasi yang disesuaikan dengan karakteristik, minat, atau interaksi mereka sebelumnya. Hal ini diharapkan dapat meningkatkan kepuasan belajar pengguna sekaligus efektivitas penggunaan platform Coursera.
 
 ### Problem Statements
-
-Menjelaskan pernyataan masalah:
-- Pernyataan Masalah 1
-- Pernyataan Masalah 2
-- Pernyataan Masalah n
+1. Bagaimana cara membuat sistem rekomendasi yang mampu menangani kebutuhan pengguna baru dan pengguna aktif platform Coursera?
+2. Bagaimana merancang sistem rekomendasi kursus berbasis konten menggunakan pendekatan TF-IDF dan cosine similarity agar mampu menyarankan kursus yang serupa dengan preferensi pengguna?
+3. Bagaimana membangun sistem Collaborative Filtering berbasis Neural Collaborative Filtering (Recommender Net) yang mampu belajar dari interaksi pengguna terhadap kursus secara efisien?
 
 ### Goals
+1. Menyediakan sistem rekomendasi yang dapat mengatasi masalah cold-start user sekaligus meningkatkan relevansi rekomendasi bagi pengguna aktif platform Coursera.
+2. Mengembangkan sistem Content-Based Filtering dengan pendekatan representasi teks menggunakan TF-IDF dan pengukuran kemiripan antar kursus dengan cosine similarity.
+3. Mengembangkan sistem Collaborative Filtering dengan pendekatan Recommender Net berbasis embedding untuk mempelajari pola interaksi pengguna terhadap kursus.
 
-Menjelaskan tujuan proyek yang menjawab pernyataan masalah:
-- Jawaban pernyataan masalah 1
-- Jawaban pernyataan masalah 2
-- Jawaban pernyataan masalah n
-
-Semua poin di atas harus diuraikan dengan jelas. Anda bebas menuliskan berapa pernyataan masalah dan juga goals yang diinginkan.
-
-**Rubrik/Kriteria Tambahan (Opsional)**:
-- Menambahkan bagian “Solution Approach” yang menguraikan cara untuk meraih goals. Bagian ini dibuat dengan ketentuan sebagai berikut: 
-
-    ### Solution statements
-    - Mengajukan 2 atau lebih solution approach (algoritma atau pendekatan sistem rekomendasi).
+### Solution statements
+- Solusi 1: Membangun sistem Content-Based Filtering yang merekomendasikan kursus berdasarkan kesamaan konten dengan kursus yang telah diminati pengguna. Representasi konten akan dihasilkan menggunakan teknik TF-IDF dari fitur seperti judul dan institusi kursus, kemudian dilakukan pengukuran kemiripan menggunakan cosine similarity untuk menghasilkan daftar kursus yang relevan. Sistem ini ditujukan untuk pengguna baru yang belum banyak berinteraksi dengan platform.
+- Solusi 2: Membangun sistem Collaborative Filtering menggunakan pendekatan Neural Collaborative Filtering (Recommender Net) dengan memanfaatkan embedding untuk merepresentasikan pengguna dan kursus. Sistem ini akan dilatih menggunakan data historis ulasan atau rating dari pengguna dan bertujuan untuk memberikan rekomendasi berdasarkan preferensi kolektif pengguna lain yang memiliki pola interaksi serupa.
+- Solusi 3: Mengintegrasikan kedua pendekatan tersebut untuk menciptakan sistem yang adaptif baik terhadap pengguna baru maupun pengguna lama. Sistem Content-Based Filtering akan menangani cold-start user, sementara sistem Collaborative Filtering akan menyajikan rekomendasi berbasis interaksi yang lebih personal. Pendekatan ini diharapkan meningkatkan cakupan dan relevansi rekomendasi yang dihasilkan.
 
 ## Data Understanding
 Paragraf awal bagian ini menjelaskan informasi mengenai jumlah data, kondisi data, dan informasi mengenai data yang digunakan. Sertakan juga sumber atau tautan untuk mengunduh dataset. Contoh: [UCI Machine Learning Repository](https://archive.ics.uci.edu/ml/datasets/Restaurant+%26+consumer+data).
