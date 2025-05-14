@@ -154,11 +154,11 @@ Tahap persiapan atau prapemrosesan data merupakan langkah krusial dalam analisis
 
      ![image](https://github.com/user-attachments/assets/216e6f2b-afa6-4b20-a884-aa57dea9ef02)
 
-4. **Filtering User dengan Interaksi Rendah:** Hasil EDA menunjukkan bahwa data bersifat sangat sparsity, artinya banyak pengguna hanya memberikan sedikit rating. Untuk mengurangi noise dan meningkatkan kualitas pelatihan, dilakukan filtering user dengan cara mengambil pengguna yang memberikan rating pada lebih dari 3 kursus saja yang akan dipertahankan. Pengguna yang memiliki ≤3 interaksi dihapus. Alasan pemilihan threshold ini adalah untuk menyeimbangkan antara kualitas (relevansi pola interaksi) dan kuantitas (jumlah total data yang masih mencukupi untuk pelatihan).
+3. **Filtering User dengan Interaksi Rendah:** Hasil EDA menunjukkan bahwa data bersifat sangat sparsity, artinya banyak pengguna hanya memberikan sedikit rating. Untuk mengurangi noise dan meningkatkan kualitas pelatihan, dilakukan filtering user dengan cara mengambil pengguna yang memberikan rating pada lebih dari 3 kursus saja yang akan dipertahankan. Pengguna yang memiliki ≤3 interaksi dihapus. Alasan pemilihan threshold ini adalah untuk menyeimbangkan antara kualitas (relevansi pola interaksi) dan kuantitas (jumlah total data yang masih mencukupi untuk pelatihan).
 
     ![image](https://github.com/user-attachments/assets/55027c99-e4f2-4b17-8a53-166811e2ec6b)
 
-5. **Normalisasi Fitur Rating:** Setelah dilakukan filtering data selajutnya akan dilakukan normalisasi atau scaling terhadap fitur rating yang berada di rentang 1-5, normalisasi dilakukan menggunakan MinMaxScaler untuk mengurangi kompleksitas fitur dan mempermudah model dalam melakukan pemrosesan dalam menentukan suka atau tidak sukanya user terhadap course. Adapun metode MinMax Scaling sendiri adalah teknik penskalaan yang mengubah nilai fitur ke dalam rentang 0 hingga 1, teknik ini dipilih karena sederhana, tidak mengubah distribusi asli data secara signifikan, dan cocok untuk menjaga proporsi nilai dalam fitur yang memiliki skala berbeda. Rumus MinMax Scaling adalah:
+4. **Normalisasi Fitur Rating:** Setelah dilakukan filtering data selajutnya akan dilakukan normalisasi atau scaling terhadap fitur rating yang berada di rentang 1-5, normalisasi dilakukan menggunakan MinMaxScaler untuk mengurangi kompleksitas fitur dan mempermudah model dalam melakukan pemrosesan dalam menentukan suka atau tidak sukanya user terhadap course. Adapun metode MinMax Scaling sendiri adalah teknik penskalaan yang mengubah nilai fitur ke dalam rentang 0 hingga 1, teknik ini dipilih karena sederhana, tidak mengubah distribusi asli data secara signifikan, dan cocok untuk menjaga proporsi nilai dalam fitur yang memiliki skala berbeda. Rumus MinMax Scaling adalah:
 
   $$
   X_{\text{scaled}} = \frac{X - X_{\text{min}}}{X_{\text{max}} - X_{\text{min}}}
@@ -167,11 +167,11 @@ Tahap persiapan atau prapemrosesan data merupakan langkah krusial dalam analisis
   - $` X `$ adalah nilai original.
   - $` X_{\text{min}} `$ dan $` X_{\text{max}} `$ adalah nilai minimum dan maksimum dari fitur.
 
-6. **Encoding Fitur Kategorikal:** Berikutnya dilakukan encoding untuk fitur kategorikal yang akan digunakan dalam pelatihan model diantaranya fitur reviewers yang berisi nama user dan fitur course_id yang berisi kata kunci course atau ID dari course tidak dapat langsung diproses oleh model numerik. Oleh karena itu, dilakukan proses Label Encoding untuk mengubah nilai string menjadi nilai numerik. Hasilnya, terdapat 37.034 nilai unik untuk user dan 603 nilai unik untuk course. Proses ini penting agar data dapat diolah dalam arsitektur embedding pada model.
+5. **Encoding Fitur Kategorikal:** Berikutnya dilakukan encoding untuk fitur kategorikal yang akan digunakan dalam pelatihan model diantaranya fitur reviewers yang berisi nama user dan fitur course_id yang berisi kata kunci course atau ID dari course tidak dapat langsung diproses oleh model numerik. Oleh karena itu, dilakukan proses Label Encoding untuk mengubah nilai string menjadi nilai numerik. Hasilnya, terdapat 37.034 nilai unik untuk user dan 603 nilai unik untuk course. Proses ini penting agar data dapat diolah dalam arsitektur embedding pada model.
 
    ![image](https://github.com/user-attachments/assets/8d52e04c-66e7-4e11-80a0-08730eb37041)
 
-7. **Shuffling Dataset:** langkah berikutnya adalah melakukan pengacakan data (data shuffling) sebelum dilakukan proses pemisahan data (data splitting). Pengacakan dilakukan menggunakan sintaks berikut:  
+6. **Shuffling Dataset:** langkah berikutnya adalah melakukan pengacakan data (data shuffling) sebelum dilakukan proses pemisahan data (data splitting). Pengacakan dilakukan menggunakan sintaks berikut:  
 
      ![image](https://github.com/user-attachments/assets/67d52fd7-7d74-4ef6-aa9f-88e901da9c4f)
 
@@ -184,7 +184,7 @@ Tahap persiapan atau prapemrosesan data merupakan langkah krusial dalam analisis
    sebelum membagi data menjadi data pelatihan dan validasi, maka distribusi data menjadi lebih merata dan representatif. Ini akan meningkatkan objektivitas saat mengevaluasi performa 
    model karena data yang digunakan untuk pelatihan dan validasi memiliki keragaman yang seimbang.
 
-8. **Splitting Dataset:** Setelah proses shuffling, dilakukan pemisahan dataset menjadi dua bagian, yaitu data pelatihan (training) dan data validasi (validation). Proporsi yang digunakan adalah 80% untuk pelatihan dan 20% untuk validasi. Data training digunakan untuk melatih model agar mampu mengenali pola dalam data, sementara data validasi digunakan untuk mengukur kemampuan generalisasi model terhadap data yang belum pernah dilihat sebelumnya. Pemisahan ini dilakukan dengan menyusun X sebagai fitur yang terdiri dari user_encoded dan course_encoded, serta y sebagai label berupa rating_normalized.
+7. **Splitting Dataset:** Setelah proses shuffling, dilakukan pemisahan dataset menjadi dua bagian, yaitu data pelatihan (training) dan data validasi (validation). Proporsi yang digunakan adalah 80% untuk pelatihan dan 20% untuk validasi. Data training digunakan untuk melatih model agar mampu mengenali pola dalam data, sementara data validasi digunakan untuk mengukur kemampuan generalisasi model terhadap data yang belum pernah dilihat sebelumnya. Pemisahan ini dilakukan dengan menyusun X sebagai fitur yang terdiri dari user_encoded dan course_encoded, serta y sebagai label berupa rating_normalized.
    
     ![image](https://github.com/user-attachments/assets/31a0d92f-7d6c-42ff-b0f1-426bd8971299)
 
