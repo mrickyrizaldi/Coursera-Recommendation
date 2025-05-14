@@ -118,29 +118,49 @@ Dataset yang digunakan pada proyek sistem rekomendasi kursus Coursera ini terdir
 ## Data Preparation
 Tahap persiapan atau prapemrosesan data merupakan langkah krusial dalam analisis data dan pengembangan model machine learning. Tanpa proses ini, data yang tidak bersih, tidak lengkap, atau tidak konsisten dapat menimbulkan kesalahan dalam analisis, menurunkan akurasi model, dan menghasilkan keputusan yang kurang tepat. Oleh karena itu, prapemrosesan menjadi tahap penting untuk memastikan data dalam kondisi siap dan optimal guna menghasilkan insight serta model yang berkualitas. Berdasarkan hasil Exploratory Data Analysis sebelumnya, terdapat beberapa langkah yang perlu dilakukan:
 ### Preprocessing Course Dataset
-1. Pada dataset course dilakukan proses pembersihan fitur text yang ada pada data, meliputi pembersihan angka, tanda baca, newline, dan spasi ganda. Kemudian dilakukan tahapan casefolded untuk mengubah text menjadi huruf kecil untuk menyamakan konteks. fitur yang dilakukan data cleaning hanya fitur institusi dan course_id saja (course_id dipilih karena mengandung kata kunci berbeda untuk tiap course dibandingkan name course yang mengandung nama yang sama).
-2. Selanjutnya untuk fitur course_id yang sudah dibersihkan kemudian dilakukan pengecekan apakah textnya termasuk huruf ASCII (kemungkinan dalam alphabet inggris), jika iya maka akan dilakukan pemrosesan lanjutan meliputi tokenisasi untuk memecah kata yang akan di proses, filtering untuk menghapus stopword atau kata kurang bermakna pada text dalam bahasa inggris, terakhir dilakukan lematisasi untuk mengurangi kompleksitas fitur dengan mengubah text ke bentuk dasar kamus.
+1. **Cleaning Data Text**: Pada dataset course dilakukan proses pembersihan fitur text yang ada pada data, meliputi pembersihan angka, tanda baca, newline, dan spasi ganda. Kemudian dilakukan tahapan casefolded untuk mengubah text menjadi huruf kecil untuk menyamakan konteks. fitur yang dilakukan data cleaning hanya fitur institusi dan course_id saja (course_id dipilih karena mengandung kata kunci berbeda untuk tiap course dibandingkan name course yang mengandung nama yang sama).
+2. **Pembersihan Lanjutan Untuk Data Text:** Selanjutnya untuk fitur course_id yang sudah dibersihkan kemudian dilakukan pengecekan apakah textnya termasuk huruf ASCII (kemungkinan dalam alphabet inggris), jika iya maka akan dilakukan pemrosesan lanjutan meliputi tokenisasi untuk memecah kata yang akan di proses, filtering untuk menghapus stopword atau kata kurang bermakna pada text dalam bahasa inggris, terakhir dilakukan lematisasi untuk mengurangi kompleksitas fitur dengan mengubah text ke bentuk dasar kamus.
 
     ![image](https://github.com/user-attachments/assets/09400a5e-0d4d-4e6e-a486-039d34ba3aa9)
 
-3. Setelah semua proses selesai dibuat fitur baru bernama content yang berisi kata kunci course dari course_id dan institusi pembuat course. Tujuannya Membuat representasi gabungan dari kata kunci dan institusi sebagai identitas konten kursus. Fitur ini akan digunakan untuk menghitung kemiripan antar kursus dalam sistem rekomendasi berbasis konten.
+3. **Pembuatan Fitur Gabungan content:** Setelah semua proses selesai dibuat fitur baru bernama content yang berisi kata kunci course dari course_id dan institusi pembuat course. Tujuannya Membuat representasi gabungan dari kata kunci dan institusi sebagai identitas konten kursus. Fitur ini akan digunakan untuk menghitung kemiripan antar kursus dalam sistem rekomendasi berbasis konten.
 
     ![image](https://github.com/user-attachments/assets/1c2644e6-b36a-4b17-bc5f-34fd60d9aae5)
 
+4. **Ekstraksi Fitur dengan TF-IDF:** Setelah pembuatan fitur content yang berisi gabungan teks dari course_id dan institution, dilakukan proses ekstraksi fitur menggunakan metode TF-IDF (Term Frequency-Inverse Document Frequency). Proses ini bertujuan untuk mengubah teks gabungan dari fitur course_id dan institution menjadi representasi numerik yang dapat diproses oleh model machine learning. TF-IDF (Term Frequency-Inverse Document Frequency) adalah teknik yang mengukur seberapa penting suatu kata dalam sebuah dokumen relatif terhadap seluruh kumpulan dokumen. Pada dasarnya, TF-IDF mengkombinasikan dua komponen utama: Term Frequency (TF) dan Inverse Document Frequency (IDF). TF mengukur seberapa sering suatu kata muncul dalam sebuah dokumen, diukur dengan rumus:
+
+$$ 
+TF = \frac{\text{Jumlah kemunculan kata}}{\text{Jumlah kata dalam dokumen}} 
+$$  
+    Sedangkan IDF mengukur seberapa penting kata tersebut dalam seluruh koleksi dokumen, dengan rumus:  
+$$ 
+IDF = \log \left( \frac{\text{Jumlah dokumen}}{\text{Jumlah dokumen yang mengandung kata}} \right)
+$$  
+
+     Dengan mengalikan nilai TF dan IDF, kita mendapatkan TF-IDF, yang memberikan bobot lebih tinggi pada kata-kata yang muncul sering dalam dokumen tertentu, tetapi jarang muncul di 
+     dokumen lain. Matriks hasil dari TF-IDF ini kemudian digunakan untuk menghitung kemiripan antar kursus dalam sistem rekomendasi berbasis konten. Setiap kursus direpresentasikan 
+     sebagai sebuah dokumen, dan kata-kata dalam konten dianggap sebagai fitur. Proses ini dilakukan dengan menggunakan TfidfVectorizer dari library sklearn, yang mengubah kumpulan teks 
+     menjadi vektor numerik dalam bentuk matriks sparse. Matriks ini memiliki ukuran (jumlah kursus) × (jumlah kata unik), di mana setiap selnya menunjukkan bobot pentingnya kata tertentu 
+     dalam kursus tertentu. Tahapan ini sangat penting karena membantu mengurangi dimensi data yang terlalu besar dan tak terstruktur, meningkatkan relevansi kata-kata yang unik dalam 
+     kursus, dan pada akhirnya memungkinkan model untuk lebih akurat dalam menghitung kemiripan antar kursus.
+     
+  ![image](https://github.com/user-attachments/assets/339dd3e4-2d95-486f-9bd1-e01fd8a3c094)
+
+
 ### Preprocessing Reviews Dataset
-1. Pada tahapan EDA telah diketahui bahwa terdapat 948595 data duplikat sehingga data tersebut akan dihapus namun dengan tetap mempertahankan satu nilai rating berdasarkan rating paling terbaru untuk menjaga relevansi terhadap preferensi terkini pengguna. Tujuannya penghapusan duplikat adalah untuk menghindari bias akibat pengulangan data dan memastikan setiap interaksi user-course dihitung satu kali. Menjaga satu entri terbaru memastikan data tetap relevan secara temporal.
+1. **Penghapusan Duplikat pada Reviews Dataset:** Pada tahapan EDA telah diketahui bahwa terdapat 948595 data duplikat sehingga data tersebut akan dihapus namun dengan tetap mempertahankan satu nilai rating berdasarkan rating paling terbaru untuk menjaga relevansi terhadap preferensi terkini pengguna. Tujuannya penghapusan duplikat adalah untuk menghindari bias akibat pengulangan data dan memastikan setiap interaksi user-course dihitung satu kali. Menjaga satu entri terbaru memastikan data tetap relevan secara temporal.
 
     ![image](https://github.com/user-attachments/assets/83a1343d-bcc9-4bda-8a29-06901b71779b)
 
-2. Selanjutnya dataset reviews yang sudah dibersihkan dari duplikat dilakukan penggabungan dengan course dataset berdasarkan kesamaan dalam course_id menggunakan cara inner join untuk memastikan data-data yang tidak terdapat pada kedua dataset (belum pernah di review) tidak akan digunakan kedalam pelatihan.
+2. **Penggabungan Dataset Reviews dan Course:** Dataset reviews yang telah dibersihkan kemudian digabungkan dengan dataset course menggunakan metode inner join berdasarkan course_id. Hal ini bertujuan agar hanya kursus yang benar-benar telah direview oleh pengguna yang digunakan untuk pelatihan model, sehingga memperkuat relevansi data pelatihan.
 
      ![image](https://github.com/user-attachments/assets/216e6f2b-afa6-4b20-a884-aa57dea9ef02)
 
-4. Kemudian berdasarkan tahapan EDA yang menunjukkan bahwa sparsitynya tinggi. Hal ini bisa membuat model kesulitan belajar pola dan menurunkan akurasi prediksi karena user dengan terlalu sedikit interaksi biasanya tidak cukup informatif. Oleh karena itu akan dilakukan sedikit penanganan terhadap hal ini dengan melakukan filter user yang memiliki rating diatas 3 course saja yang akan digunakan, sebaliknya user yang dibawah itu akan dihapus. Adapun pemilihan filter diatas 3 sebagai treshold untuk menjaga keseimbangan antara kualitas dan kuantitas data.
+4. **Filtering User dengan Interaksi Rendah:** Hasil EDA menunjukkan bahwa data bersifat sangat sparsity, artinya banyak pengguna hanya memberikan sedikit rating. Untuk mengurangi noise dan meningkatkan kualitas pelatihan, dilakukan filtering user dengan cara mengambil pengguna yang memberikan rating pada lebih dari 3 kursus saja yang akan dipertahankan. Pengguna yang memiliki ≤3 interaksi dihapus. Alasan pemilihan threshold ini adalah untuk menyeimbangkan antara kualitas (relevansi pola interaksi) dan kuantitas (jumlah total data yang masih mencukupi untuk pelatihan).
 
     ![image](https://github.com/user-attachments/assets/55027c99-e4f2-4b17-8a53-166811e2ec6b)
 
-5. Setelah dilakukan filtering data selajutnya akan dilakukan normalisasi atau scaling terhadap fitur rating yang berada di rentang 1-5, normalisasi dilakukan menggunakan MinMaxScaler untuk mengurangi kompleksitas fitur dan mempermudah model dalam melakukan pemrosesan dalam menentukan suka atau tidak sukanya user terhadap course. Adapun metode MinMax Scaling sendiri adalah teknik penskalaan yang mengubah nilai fitur ke dalam rentang 0 hingga 1, teknik ini dipilih karena sederhana, tidak mengubah distribusi asli data secara signifikan, dan cocok untuk menjaga proporsi nilai dalam fitur yang memiliki skala berbeda. Rumus MinMax Scaling adalah:
+5. **Normalisasi Fitur Rating:** Setelah dilakukan filtering data selajutnya akan dilakukan normalisasi atau scaling terhadap fitur rating yang berada di rentang 1-5, normalisasi dilakukan menggunakan MinMaxScaler untuk mengurangi kompleksitas fitur dan mempermudah model dalam melakukan pemrosesan dalam menentukan suka atau tidak sukanya user terhadap course. Adapun metode MinMax Scaling sendiri adalah teknik penskalaan yang mengubah nilai fitur ke dalam rentang 0 hingga 1, teknik ini dipilih karena sederhana, tidak mengubah distribusi asli data secara signifikan, dan cocok untuk menjaga proporsi nilai dalam fitur yang memiliki skala berbeda. Rumus MinMax Scaling adalah:
 
 $$
 X_{\text{scaled}} = \frac{X - X_{\text{min}}}{X_{\text{max}} - X_{\text{min}}}
@@ -149,12 +169,25 @@ $$
   - $` X `$ adalah nilai original.  
   - $` X_{\text{min}} `$ dan $` X_{\text{max}} `$ adalah nilai minimum dan maksimum dari fitur.
 
-5. Berikutnya dilakukan encoding untuk fitur kategorikal yang akan digunakan dalam pelatihan model diantaranya fitur reviewers yang berisi nama user dan fitur course_id yang berisi kata kunci course atau ID dari course. Hasilnya, terdapat 37.034 nilai unik untuk user dan 603 nilai unik untuk course. Proses ini penting agar model dapat memahami data kategorikal yang secara default tidak dapat diolah oleh model numerik.
+6. **Encoding Fitur Kategorikal:** Berikutnya dilakukan encoding untuk fitur kategorikal yang akan digunakan dalam pelatihan model diantaranya fitur reviewers yang berisi nama user dan fitur course_id yang berisi kata kunci course atau ID dari course tidak dapat langsung diproses oleh model numerik. Oleh karena itu, dilakukan proses Label Encoding untuk mengubah nilai string menjadi nilai numerik. Hasilnya, terdapat 37.034 nilai unik untuk user dan 603 nilai unik untuk course. Proses ini penting agar data dapat diolah dalam arsitektur embedding pada model.
 
    ![image](https://github.com/user-attachments/assets/8d52e04c-66e7-4e11-80a0-08730eb37041)
 
-7. Terakhir dilakukan data splitting dengan mengacak keseluruhan isi dataset terlebih dahulu untuk mencegah bias (shuffling), selanjutnya dilakukan splitting yaitu memisahkan data pelatihan dan validasi untuk mengevaluasi performa model secara obyektif dengan proporsi 80% data training dan 20% data validasi di mana X terdiri dari user_encoded dan course encoded, serta y yang berisi rating normalized.
+7. **Shuffling Dataset:** langkah berikutnya adalah melakukan pengacakan data (data shuffling) sebelum dilakukan proses pemisahan data (data splitting). Pengacakan dilakukan menggunakan sintaks berikut:  
 
+    ![image](https://github.com/user-attachments/assets/67d52fd7-7d74-4ef6-aa9f-88e901da9c4f)
+
+   Pada sintaks di atas, sample(frac=1) berfungsi untuk mengambil 100% data dalam filtered_df dan mengacak urutannya secara acak. Parameter frac=1 berarti seluruh baris akan diambil dan 
+   disusun ulang. Sementara itu, random_state=42 berfungsi sebagai penentu nilai awal (seed) dari proses pengacakan, sehingga hasilnya dapat direproduksi secara konsisten setiap kali kode 
+   dijalankan. Pemilihan angka 42 bersifat arbitrer, tetapi penetapan nilai random_state secara eksplisit penting agar hasil eksperimen dapat dikontrol dan diulang dengan hasil yang sama. 
+   Proses shuffling ini merupakan teknik penting dalam tahapan data preparation karena dataset asli sering kali memiliki urutan data yang tidak acak. Misalnya, data mungkin disusun 
+   berdasarkan waktu submit review, ID pengguna, atau jenis kursus tertentu. Jika tidak dilakukan pengacakan, model berisiko mempelajari pola dari urutan data yang tidak mewakili 
+   distribusi data secara keseluruhan. Hal ini dapat menyebabkan bias dalam proses pelatihan, dan berdampak pada penurunan akurasi serta generalisasi model. Dengan melakukan pengacakan 
+   sebelum membagi data menjadi data pelatihan dan validasi, maka distribusi data menjadi lebih merata dan representatif. Ini akan meningkatkan objektivitas saat mengevaluasi performa 
+   model karena data yang digunakan untuk pelatihan dan validasi memiliki keragaman yang seimbang.
+
+8. **Splitting Dataset:** Setelah proses shuffling, dilakukan pemisahan dataset menjadi dua bagian, yaitu data pelatihan (training) dan data validasi (validation). Proporsi yang digunakan adalah 80% untuk pelatihan dan 20% untuk validasi. Data training digunakan untuk melatih model agar mampu mengenali pola dalam data, sementara data validasi digunakan untuk mengukur kemampuan generalisasi model terhadap data yang belum pernah dilihat sebelumnya. Pemisahan ini dilakukan dengan menyusun X sebagai fitur yang terdiri dari user_encoded dan course_encoded, serta y sebagai label berupa rating_normalized.
+   
     ![image](https://github.com/user-attachments/assets/31a0d92f-7d6c-42ff-b0f1-426bd8971299)
 
 
