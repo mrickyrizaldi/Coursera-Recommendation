@@ -127,24 +127,22 @@ Tahap persiapan atau prapemrosesan data merupakan langkah krusial dalam analisis
 
     ![image](https://github.com/user-attachments/assets/1c2644e6-b36a-4b17-bc5f-34fd60d9aae5)
 
-4. **Ekstraksi Fitur dengan TF-IDF:** Setelah pembuatan fitur content yang berisi gabungan teks dari course_id dan institution, dilakukan proses ekstraksi fitur menggunakan metode TF-IDF (Term Frequency-Inverse Document Frequency). Proses ini bertujuan untuk mengubah teks gabungan dari fitur course_id dan institution menjadi representasi numerik yang dapat diproses oleh model machine learning. TF-IDF (Term Frequency-Inverse Document Frequency) adalah teknik yang mengukur seberapa penting suatu kata dalam sebuah dokumen relatif terhadap seluruh kumpulan dokumen. Pada dasarnya, TF-IDF mengkombinasikan dua komponen utama: Term Frequency (TF) dan Inverse Document Frequency (IDF). TF mengukur seberapa sering suatu kata muncul dalam sebuah dokumen, diukur dengan rumus:
+4. **Ekstraksi Fitur dengan TF-IDF:** Setelah pembuatan fitur content yang berisi gabungan teks dari course_id dan institution, dilakukan proses ekstraksi fitur menggunakan metode TF-IDF (Term Frequency-Inverse Document Frequency). Proses ini bertujuan untuk mengubah teks gabungan dari fitur course_id dan institution menjadi representasi numerik yang dapat diproses oleh model machine learning. TF-IDF (Term Frequency-Inverse Document Frequency) adalah teknik yang mengukur seberapa penting suatu kata dalam sebuah dokumen relatif terhadap seluruh kumpulan dokumen. Pada dasarnya, TF-IDF mengkombinasikan dua komponen utama: Term Frequency (TF) dan Inverse Document Frequency (IDF). TF mengukur seberapa sering suatu kata muncul dalam sebuah dokumen dan IDF mengukur seberapa penting kata tersebut dalam seluruh koleksi dokumen, dihitung dengan rumus:
 
-$$ 
-TF = \frac{\text{Jumlah kemunculan kata}}{\text{Jumlah kata dalam dokumen}} 
-$$  
-    Sedangkan IDF mengukur seberapa penting kata tersebut dalam seluruh koleksi dokumen, dengan rumus:  
-$$ 
-IDF = \log \left( \frac{\text{Jumlah dokumen}}{\text{Jumlah dokumen yang mengandung kata}} \right)
-$$  
+    $$ 
+    TF = \frac{\text{Jumlah kemunculan kata}}{\text{Jumlah kata dalam dokumen}} 
+    $$  
+    
+    $$ 
+    IDF = \log \left( \frac{\text{Jumlah dokumen}}{\text{Jumlah dokumen yang mengandung kata}} \right)
+    $$  
 
-     Dengan mengalikan nilai TF dan IDF, kita mendapatkan TF-IDF, yang memberikan bobot lebih tinggi pada kata-kata yang muncul sering dalam dokumen tertentu, tetapi jarang muncul di 
-     dokumen lain. Matriks hasil dari TF-IDF ini kemudian digunakan untuk menghitung kemiripan antar kursus dalam sistem rekomendasi berbasis konten. Setiap kursus direpresentasikan 
-     sebagai sebuah dokumen, dan kata-kata dalam konten dianggap sebagai fitur. Proses ini dilakukan dengan menggunakan TfidfVectorizer dari library sklearn, yang mengubah kumpulan teks 
-     menjadi vektor numerik dalam bentuk matriks sparse. Matriks ini memiliki ukuran (jumlah kursus) × (jumlah kata unik), di mana setiap selnya menunjukkan bobot pentingnya kata tertentu 
-     dalam kursus tertentu. Tahapan ini sangat penting karena membantu mengurangi dimensi data yang terlalu besar dan tak terstruktur, meningkatkan relevansi kata-kata yang unik dalam 
-     kursus, dan pada akhirnya memungkinkan model untuk lebih akurat dalam menghitung kemiripan antar kursus.
-     
-  ![image](https://github.com/user-attachments/assets/339dd3e4-2d95-486f-9bd1-e01fd8a3c094)
+    Dengan mengalikan nilai TF dan IDF, kita mendapatkan TF-IDF, yang memberikan bobot lebih tinggi pada kata-kata yang muncul sering dalam dokumen tertentu, tetapi jarang muncul di 
+    dokumen lain. Matriks hasil dari TF-IDF ini kemudian digunakan untuk menghitung kemiripan antar kursus dalam sistem rekomendasi berbasis konten. Setiap kursus direpresentasikan 
+    sebagai sebuah dokumen, dan kata-kata dalam konten dianggap sebagai fitur. Proses ini dilakukan dengan menggunakan TfidfVectorizer dari library sklearn, yang mengubah kumpulan teks 
+    menjadi vektor numerik dalam bentuk matriks sparse. Matriks ini memiliki ukuran (jumlah kursus) × (jumlah kata unik), di mana setiap selnya menunjukkan bobot pentingnya kata tertentu 
+    dalam kursus tertentu. Tahapan ini sangat penting karena membantu mengurangi dimensi data yang terlalu besar dan tak terstruktur, meningkatkan relevansi kata-kata yang unik dalam 
+    kursus, dan pada akhirnya memungkinkan model untuk lebih akurat dalam menghitung kemiripan antar kursus.
 
 
 ### Preprocessing Reviews Dataset
@@ -162,11 +160,11 @@ $$
 
 5. **Normalisasi Fitur Rating:** Setelah dilakukan filtering data selajutnya akan dilakukan normalisasi atau scaling terhadap fitur rating yang berada di rentang 1-5, normalisasi dilakukan menggunakan MinMaxScaler untuk mengurangi kompleksitas fitur dan mempermudah model dalam melakukan pemrosesan dalam menentukan suka atau tidak sukanya user terhadap course. Adapun metode MinMax Scaling sendiri adalah teknik penskalaan yang mengubah nilai fitur ke dalam rentang 0 hingga 1, teknik ini dipilih karena sederhana, tidak mengubah distribusi asli data secara signifikan, dan cocok untuk menjaga proporsi nilai dalam fitur yang memiliki skala berbeda. Rumus MinMax Scaling adalah:
 
-$$
-X_{\text{scaled}} = \frac{X - X_{\text{min}}}{X_{\text{max}} - X_{\text{min}}}
-$$
+  $$
+  X_{\text{scaled}} = \frac{X - X_{\text{min}}}{X_{\text{max}} - X_{\text{min}}}
+  $$
 
-  - $` X `$ adalah nilai original.  
+  - $` X `$ adalah nilai original.
   - $` X_{\text{min}} `$ dan $` X_{\text{max}} `$ adalah nilai minimum dan maksimum dari fitur.
 
 6. **Encoding Fitur Kategorikal:** Berikutnya dilakukan encoding untuk fitur kategorikal yang akan digunakan dalam pelatihan model diantaranya fitur reviewers yang berisi nama user dan fitur course_id yang berisi kata kunci course atau ID dari course tidak dapat langsung diproses oleh model numerik. Oleh karena itu, dilakukan proses Label Encoding untuk mengubah nilai string menjadi nilai numerik. Hasilnya, terdapat 37.034 nilai unik untuk user dan 603 nilai unik untuk course. Proses ini penting agar data dapat diolah dalam arsitektur embedding pada model.
@@ -175,7 +173,7 @@ $$
 
 7. **Shuffling Dataset:** langkah berikutnya adalah melakukan pengacakan data (data shuffling) sebelum dilakukan proses pemisahan data (data splitting). Pengacakan dilakukan menggunakan sintaks berikut:  
 
-    ![image](https://github.com/user-attachments/assets/67d52fd7-7d74-4ef6-aa9f-88e901da9c4f)
+     ![image](https://github.com/user-attachments/assets/67d52fd7-7d74-4ef6-aa9f-88e901da9c4f)
 
    Pada sintaks di atas, sample(frac=1) berfungsi untuk mengambil 100% data dalam filtered_df dan mengacak urutannya secara acak. Parameter frac=1 berarti seluruh baris akan diambil dan 
    disusun ulang. Sementara itu, random_state=42 berfungsi sebagai penentu nilai awal (seed) dari proses pengacakan, sehingga hasilnya dapat direproduksi secara konsisten setiap kali kode 
